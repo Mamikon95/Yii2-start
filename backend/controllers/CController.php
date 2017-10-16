@@ -58,14 +58,18 @@ class CController extends Controller
     public function beforeAction($action)
     {
 
+		//Проверка на страницы, и логин
         if($this->action->id != 'login' && $this->id != 'site' && yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         }
 
+		//Если это гость и он не на запросе выхода то продолжаем
         if(!yii::$app->user->isGuest && $this->action->id != 'logout' && $this->id != 'site') {
 
+			//Относительный путь
             $path = yii::$app->request->baseUrl.'/'.yii::$app->request->pathInfo;
 
+			//Если пользователю не разрешено видеть страницу то 403
             if(!yii::$app->user->identity->roleo->can($path)) {
                 $this->throwAccessError();
             }
